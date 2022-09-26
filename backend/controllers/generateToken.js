@@ -7,5 +7,5 @@ const generateToken = (id) => {
         expiresIn: '30d'
     })
 }
-
+// generated
 module.exports = {generateToken};

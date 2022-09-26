@@ -69,7 +69,7 @@ const createTicket  = asyncHandler(async(req, res) => {
 
     if(!product || !description){
         res.status(400)
-        throw new Error('Please add a product in description')
+        throw new Error('Please add a product and description')
     }
     
     // get user using the id in the jwt
