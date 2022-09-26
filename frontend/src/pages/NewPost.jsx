@@ -1,7 +1,7 @@
 import {useState} from 'react'
 import {useSelector} from 'react-redux'
 
-function NewTicket() {
+function NewPost() {
 
     const {user} = useSelector((state) => state.auth);
     const [name, setName] = useState(user.name);
@@ -14,4 +14,4 @@ function NewTicket() {
     )
 }
 
-export default NewTicket
+export default NewPost

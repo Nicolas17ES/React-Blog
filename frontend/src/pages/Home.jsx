@@ -6,14 +6,14 @@ function Home() {
     return (
         <>
             <section className="heading">
-                <h1>How can we help you</h1>
-                <p>Please choose from an option below</p>
+                <h1>Welcome to Bloggs</h1>
+                <p>Create a post and share it with our community</p>
             </section>
 
-            <Link to='/new-ticket' className='btn btn-reverse btn-block'>
+            <Link to='/new-post' className='btn btn-reverse btn-block'>
                 <FaQuestionCircle/> Create New Post
             </Link>
-            <Link to='/tickets' className='btn btn-block'>
+            <Link to='/posts' className='btn btn-block'>
                 <FaTicketAlt/> View My Posts
             </Link>
         </>
