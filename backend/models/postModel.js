@@ -1,19 +1,19 @@
 const mongoose = require('mongoose');
 
-const ticketSchema = mongoose.Schema({
+const postSchema = mongoose.Schema({
     user: {
         type: mongoose.Schema.Types.ObjectId,
         required: true,
         ref: 'User'
     },
-    product: {
+    type: {
         type: String,
-        required: [true, 'Please select a product'],
-        enum: ['iPhone', 'Macbook Pro', 'iMac', 'iPad']
+        required: [true, 'Please select a type'],
+        enum: ['Culture', 'Art', 'Politics', 'Society']
     },
-    description: {
+    body: {
         type: String,
-        required: [true, 'Please a description of the issue'],
+        required: [true, 'Please add a body to your post'],
     },
     status: {
         type: String,
@@ -26,4 +26,4 @@ const ticketSchema = mongoose.Schema({
     timestamps: true,
 })
 
-module.exports = mongoose.model('Ticket', ticketSchema)
+module.exports = mongoose.model('Post', postSchema)
