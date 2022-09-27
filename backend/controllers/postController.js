@@ -65,11 +65,11 @@ const getPost  = asyncHandler(async(req, res) => {
 // @access Private
 
 const createPost  = asyncHandler(async(req, res) => {
-    const {type, body} = req.body;
+    const {type, title, body} = req.body;
 
-    if(!type || !body){
+    if(!type || !body || !title){
         res.status(400)
-        throw new Error('Please add a body and type')
+        throw new Error('Please add a body a type and a title')
     }
     
     // get user using the id in the jwt
@@ -83,6 +83,7 @@ const createPost  = asyncHandler(async(req, res) => {
     const post = await Post.create({
         type,
         body,
+        title,
         user: req.user.id,
         status: 'new'
 

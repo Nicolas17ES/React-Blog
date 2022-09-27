@@ -11,6 +11,10 @@ const postSchema = mongoose.Schema({
         required: [true, 'Please select a type'],
         enum: ['Culture', 'Art', 'Politics', 'Society']
     },
+    title: {
+        type: String,
+        required: [true, 'Please add a title'],
+    },
     body: {
         type: String,
         required: [true, 'Please add a body to your post'],

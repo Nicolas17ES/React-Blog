@@ -13,7 +13,7 @@ function Home() {
             <Link to='/new-post' className='btn btn-reverse btn-block'>
                 <FaQuestionCircle/> Create New Post
             </Link>
-            <Link to='/posts' className='btn btn-block'>
+            <Link to='/user-posts' className='btn btn-block'>
                 <FaTicketAlt/> View My Posts
             </Link>
         </>
