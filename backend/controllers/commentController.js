@@ -21,10 +21,6 @@ const getComments  = asyncHandler(async(req, res) => {
 
     const post = await Post.findById(req.params.postId)
 
-    if(post.user.toString() !== req.user.id){
-        res.status(401)
-        throw new Error('Not Authorized');
-    }
 
     const comments = await Comment.find({post: req.params.postId})
      
@@ -35,6 +31,7 @@ const getComments  = asyncHandler(async(req, res) => {
 // @access Private
 
 const createComment  = asyncHandler(async(req, res) => {
+    console.log(req.user.id)
 
     // get user using the id in the jwt
     const user = await User.findById(req.user.id);
@@ -53,6 +50,7 @@ const createComment  = asyncHandler(async(req, res) => {
     const comments = await Comment.create({
         post: req.params.postId,
         user: req.user.id,
+        username: req.user.username,
         text: req.body.text
     })
      

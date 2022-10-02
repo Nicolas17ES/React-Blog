@@ -4,6 +4,7 @@ function PostItem({post}) {
     return (
         <div>
             <div className="ticket">
+                <div>{post.username}</div>
                 <div>{new Date(post.createdAt).toLocaleString('en-EU')}</div>
                 <h2 style={{textTransform: 'uppercase'}}>{post.title}</h2>
                 <div>{post.type}</div>

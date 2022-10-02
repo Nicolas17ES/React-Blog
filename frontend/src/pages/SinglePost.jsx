@@ -2,10 +2,11 @@ import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {getUserSinglePost, updatePost} from '../features/posts/postsSlice'
 import {getComments, createComment} from '../features/comments/commentsSlice'
-import {useParams, useNavigate} from 'react-router-dom'
+import {useParams} from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
 import SingleComment from '../components/SingleComment'
+import RatingResults from '../components/RatingResults'
 import {toast} from 'react-toastify'
 import Modal from 'react-modal'
 import {BiEditAlt} from 'react-icons/bi'
@@ -36,8 +37,6 @@ function SinglePost() {
 
     const dispatch = useDispatch();
     const {postId} = useParams();
-
-
 
     // get all user tickets
     useEffect(() => {
@@ -94,11 +93,14 @@ function SinglePost() {
         <div className="ticket-page">
             <header className="ticket-header">
                 <BackButton url="/user-posts"/>
-                <h2 style={{textTransform: 'uppercase'}}>{post.title}</h2>
+                
+                <h2>{post.username}</h2>
+                <h2 style={{textTransform: 'uppercase'}}>{post.username}</h2>
                 <h3>{new Date(post.createdAt).toLocaleString('en-EU')}</h3>
                 <hr/>
                 <div className="ticket-desc">Category: {post.type}</div>
                 <div className="">{post.body}</div>
+                <RatingResults />
                 <h2>Comments</h2>
                 {comments.map((comment) => (
                     <SingleComment key={comment._id} comment={comment}/>

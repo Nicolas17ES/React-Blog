@@ -39,6 +39,7 @@ function UserPosts() {
             <h1>All your Blog Posts</h1>
             <div className="tickets">
                 <div className="ticket-headings">
+                    <div>Username</div>
                     <div>Date</div>
                     <div>Title</div>
                     <div>Type</div>

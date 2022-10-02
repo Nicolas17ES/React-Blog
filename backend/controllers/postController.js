@@ -84,6 +84,7 @@ const createPost  = asyncHandler(async(req, res) => {
         type,
         body,
         title,
+        username: req.user.username,
         user: req.user.id,
         status: 'new'
 

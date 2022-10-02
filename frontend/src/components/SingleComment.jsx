@@ -4,12 +4,10 @@ import {useSelector} from 'react-redux'
 function SingleComment({comment}) {
     
 
-    const {user} = useSelector((state) => state.auth);
-
     return (
             <div className="note">
+                <h3>{comment.username}</h3>
                 <p>{comment.text}</p>
-                
                 <div className="note-date">
                     {new Date(comment.createdAt).toLocaleString('en-EU')}
                 </div>

@@ -1,12 +1,16 @@
 import {Link} from 'react-router-dom'
+import {useSelector} from 'react-redux'
+
 import {FaQuestionCircle, FaTicketAlt} from 'react-icons/fa'
 
 
 function Home() {
+    const {user} = useSelector ((state) => state.auth);
+
     return (
         <>
             <section className="heading">
-                <h1>Welcome to Bloggs</h1>
+                {user ?  <h1>Welcome to Bloggs {user.username}</h1> : <h1>Welcome to Bloggs</h1>}
                 <p>Create a post and share it with our community</p>
             </section>
 
