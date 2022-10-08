@@ -1,9 +1,10 @@
 import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {getUserSinglePost, updatePost} from '../features/posts/postsSlice'
+import {getUserSinglePost, updatePost, savePost} from '../features/posts/postsSlice'
 import {getComments, createComment} from '../features/comments/commentsSlice'
-import {useParams} from 'react-router-dom'
+import {Link, useParams} from 'react-router-dom'
 import Spinner from '../components/Spinner'
+import ShareLinks from '../components/ShareLinks'
 import BackButton from '../components/BackButton'
 import SingleComment from '../components/SingleComment'
 import RatingResults from '../components/RatingResults'
@@ -11,6 +12,8 @@ import {toast} from 'react-toastify'
 import Modal from 'react-modal'
 import {BiEditAlt} from 'react-icons/bi'
 import {FaPlus} from 'react-icons/fa'
+import {BsFillSaveFill} from 'react-icons/bs'
+
 
 // modal style
 const customStyles = {
@@ -48,6 +51,7 @@ function SinglePost() {
         // eslint-disable-next-line
     }, [isError, message, postId])
 
+
     
     // update single ticket form own user
 
@@ -78,6 +82,12 @@ function SinglePost() {
 
     }
 
+    // save post
+
+    const saveThisPost = () => {
+        dispatch(savePost({postId}))
+    }
+
 
     if(isLoading || commentsIsLoading){
         return (
@@ -93,14 +103,22 @@ function SinglePost() {
         <div className="ticket-page">
             <header className="ticket-header">
                 <BackButton url="/user-posts"/>
+                <Link to="/user-profile" state={{
+                    userId: post.user,
+                    username: post.username,
+                    }}>
+                        
+                    <h2 style={{textTransform: 'capitalize'}}>{post.username}</h2>
+                </Link>
                 
-                <h2>{post.username}</h2>
-                <h2 style={{textTransform: 'uppercase'}}>{post.username}</h2>
+                <h2 style={{textTransform: 'uppercase'}}>{post.title}</h2>
                 <h3>{new Date(post.createdAt).toLocaleString('en-EU')}</h3>
                 <hr/>
-                <div className="ticket-desc">Category: {post.type}</div>
+                <div className="ticket-desc" style={{textTransform: 'capitalize'}}>Category: {post.type}</div>
                 <div className="">{post.body}</div>
+                <span> <p>Save</p><BsFillSaveFill onClick={saveThisPost}/></span>
                 <RatingResults />
+                <ShareLinks hash={post.type} title={post.title}/>
                 <h2>Comments</h2>
                 {comments.map((comment) => (
                     <SingleComment key={comment._id} comment={comment}/>

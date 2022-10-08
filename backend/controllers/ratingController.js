@@ -2,6 +2,7 @@ const asyncHandler = require('express-async-handler');
 
 const User = require('../models/userModel');
 const Rating = require('../models/ratingModel');
+const Post = require('../models/postModel');
 
 
 // @desc Get  post rating
@@ -16,7 +17,6 @@ const getRating = asyncHandler(async(req, res) => {
         res.status(401)
         throw new Error('User not found');
     }
-
 
     const rating = await Rating.find({post: req.params.postId})
      
@@ -47,6 +47,9 @@ const createRating  = asyncHandler(async(req, res) => {
      
     res.status(200).json(rating)
 })
+
+
+
 
 
 

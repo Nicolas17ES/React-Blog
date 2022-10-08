@@ -1,7 +1,12 @@
 const asyncHandler = require('express-async-handler');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
+
 
 const User = require('../models/userModel');
 const Post = require('../models/postModel');
+const Rating = require('../models/ratingModel');
+
 
 
 
@@ -22,6 +27,27 @@ const getPosts  = asyncHandler(async(req, res) => {
     const posts = await Post.find({user: req.user.id})
      
     res.status(200).json(posts)
+})
+
+
+
+
+// @desc Get other user posts 
+// @route GET/api/posts/user/:userId
+// @access Private
+
+const getPostsFromOtherUser  = asyncHandler(async(req, res) => {
+
+    // get user using the id in the jwt
+    const user = await User.findById(req.params.userId);
+    if(!user){
+        res.status(401)
+        throw new Error('User not found');
+    }
+
+    const posts = await Post.find({user: req.params.userId})
+     
+    res.status(200).json(posts.reverse())
 })
 
 
@@ -48,10 +74,10 @@ const getPost  = asyncHandler(async(req, res) => {
         throw new Error('Post not found')
     }
 
-    if(post.user.toString() !== req.user.id){
-        res.status(401)
-        throw new Error('Not Authorized')
-    }
+    // if(post.user.toString() !== req.user.id){
+    //     res.status(401)
+    //     throw new Error('Not Authorized')
+    // }
      
     res.status(200).json(post)
 })
@@ -65,7 +91,8 @@ const getPost  = asyncHandler(async(req, res) => {
 // @access Private
 
 const createPost  = asyncHandler(async(req, res) => {
-    const {type, title, body} = req.body;
+        const {type, title, body} = req.body;
+
 
     if(!type || !body || !title){
         res.status(400)
@@ -84,7 +111,7 @@ const createPost  = asyncHandler(async(req, res) => {
         type,
         body,
         title,
-        username: req.user.username,
+        username: req.user.username.toLowerCase(),
         user: req.user.id,
         status: 'new'
 
@@ -160,12 +187,116 @@ const updatePost  = asyncHandler(async(req, res) => {
 
 
 
+// @desc Get posts for search query 
+// @route GET/api/posts/search/:query
+const getPostsSearchQuery  = asyncHandler(async(req, res) => {
+    const searchQuery = req.params.query;
+    const posts = await Post.find({$or:[{username: {$regex : searchQuery.toString(), "$options": "i" }}, {type: {$regex : searchQuery.toString(), "$options": "i" }}, {title: {$regex : searchQuery.toString(), "$options": "i" }}]})
+    res.status(200).json(posts)
+})
+
+
+// @desc Get best rated postss 
+// @route GET/api/posts/best/rated
+const getBestRatedPosts  = asyncHandler(async(req, res) => {
+    const rating = await Rating.aggregate([
+        {"$match" : {"agree" : true}},
+        {"$sortByCount" : "$post"},
+        {"$limit" : 3}
+    ])
+
+    const bestRatedIds = []
+    rating.forEach(rate => {
+        bestRatedIds.push(rate._id);
+    });
+
+    const posts0 = await Post.find({_id: bestRatedIds[0]})
+    const posts1 = await Post.find({_id: bestRatedIds[1]})
+    const posts2 = await Post.find({_id: bestRatedIds[2]})
+
+    const total = []
+    total.push(posts0[0])
+    total.push(posts1[0])
+    total.push(posts2[0])
+
+    res.status(200).json(total)
+})
+
+// @desc Get best rated postss from given user 
+// @route GET/api/posts/best/rated/userId
+const getBestRatedPostsFromUser  = asyncHandler(async(req, res) => {
+    const id = req.params.userId;
+    console.log(id)
+
+    const rating = await Rating.aggregate([
+        {"$match" : {"agree" : true}},
+        {"$sortByCount" : "$post"},
+        {"$limit" : 3}
+    ])
+
+
+    const bestRatedIds = []
+    rating.forEach(rate => {
+        bestRatedIds.push(rate._id);
+    });
+    console.log(bestRatedIds)
+
+    const posts0 = await Post.aggregate([
+        { "$match": { 
+            "user": ObjectId(id),
+            "_id": bestRatedIds[0],
+            }
+        },
+    ])
+    const posts1 = await Post.aggregate([
+        { "$match": { 
+            "user": ObjectId(id),
+            "_id": bestRatedIds[1],
+            }
+        },
+    ])
+    const posts2 = await Post.aggregate([
+        { "$match": { 
+            "user": ObjectId(id),
+            "_id": bestRatedIds[2],
+            }
+        },
+    ])
+
+    const total = []
+    total.push(posts0[0])
+    total.push(posts1[0])
+    total.push(posts2[0])
+    
+    
+    // ({_id: {$in: bestRatedIds}})
+
+    res.status(200).json(total)
+})
+
+
+// @desc Get most recent posts 
+// @route GET/api/posts/best/rated
+const getLatestPosts  = asyncHandler(async(req, res) => {
+
+    const posts = await Post.find().limit(3).sort({_id:-1});
+
+    res.status(200).json(posts)
+})
+
+
 
 module.exports = {
     getPosts,
     getPost,
     createPost,
     deletePost,
-    updatePost
+    updatePost,
+    getPostsSearchQuery,
+    getBestRatedPosts,
+    getLatestPosts,
+    getPostsFromOtherUser,
+    getBestRatedPostsFromUser,
+    getBestRatedPostsFromUser,
 }
   

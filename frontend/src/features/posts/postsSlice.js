@@ -3,6 +3,9 @@ import postsService from './postsService'
 
 const initialState = {
     posts: [],
+    postsSearch: [],
+    bestPosts: [],
+    savedPosts: [],
     post: {},
     isError: false,
     isSuccess: false,
@@ -27,6 +30,18 @@ export const getUserPosts = createAsyncThunk('posts/getAllUserPosts', async (_, 
     try{
         const token = thunkAPI.getState().auth.user.token;
         return await postsService.getUserPosts(token)
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// get  posts from other users
+
+export const getPostsFromOtherUser = createAsyncThunk('posts/getPostsFromOtherUser', async (userId, thunkAPI) => {
+    try{
+        // const token = thunkAPI.getState().auth.user.token;
+        return await postsService.getPostsFromOtherUser(userId)
     } catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue(message)
@@ -59,6 +74,78 @@ export const updatePost = createAsyncThunk('posts/updateUserPost', async (postId
     }
 })
 
+// get  posts  from search query
+
+export const getPostsFromQuery = createAsyncThunk('posts/getSearchPosts', async (searchQuery, thunkAPI) => {
+    try{
+        
+        return await postsService.getPostsFromQuery(searchQuery)
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// get  best rated posts 
+
+export const getBestRatedPosts = createAsyncThunk('posts/getBestRatedPosts', async (_, thunkAPI) => {
+    try{
+        
+        return await postsService.getBestRatedPosts()
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+
+// get  best rated posts 
+
+export const getLatestPosts = createAsyncThunk('posts/getLatestPosts', async (_, thunkAPI) => {
+    try{
+        
+        return await postsService.getLatestPosts()
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// get saved posts
+
+export const getSavedPosts = createAsyncThunk('posts/getSavedPosts', async (_, thunkAPI) => {
+    try{
+        const token = thunkAPI.getState().auth.user.token;
+        return await postsService.getSavedPosts(token)
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// post: user saves posts
+
+export const savePost = createAsyncThunk('posts/savePost', async (postId, thunkAPI) => {
+    try{
+        const token = thunkAPI.getState().auth.user.token;
+        return await postsService.savePost(postId, token)
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
+
+// get user best  posts
+
+export const getUserBestPosts = createAsyncThunk('posts/getUserBestPosts', async (userId, thunkAPI) => {
+    try{
+        return await postsService.getUserBestPosts(userId)
+    } catch(error){
+        const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
+        return thunkAPI.rejectWithValue(message)
+    }
+})
 
 export const postSlice = createSlice ({
     name: 'posts',
@@ -121,6 +208,103 @@ export const postSlice = createSlice ({
 
             })
             .addCase(updatePost.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getPostsFromQuery.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getPostsFromQuery.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.postsSearch = action.payload;
+            })
+            .addCase(getPostsFromQuery.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getBestRatedPosts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getBestRatedPosts.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.bestPosts = action.payload;
+            })
+            .addCase(getBestRatedPosts.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getLatestPosts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getLatestPosts.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.bestPosts = action.payload;
+            })
+            .addCase(getLatestPosts.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getSavedPosts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getSavedPosts.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.savedPosts = action.payload;
+            })
+            .addCase(getSavedPosts.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(savePost.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(savePost.fulfilled, (state) => {
+                state.isLoading = false
+                state.isSuccess = true
+            })
+            .addCase(savePost.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getPostsFromOtherUser.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getPostsFromOtherUser.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.posts = action.payload;
+            })
+            .addCase(getPostsFromOtherUser.rejected, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = false
+                state.isError = true
+                state.message = action.payload
+            })
+            .addCase(getUserBestPosts.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getUserBestPosts.fulfilled, (state, action) => {
+                state.isLoading = false
+                state.isSuccess = true
+                state.posts = action.payload;
+            })
+            .addCase(getUserBestPosts.rejected, (state, action) => {
                 state.isLoading = false
                 state.isSuccess = false
                 state.isError = true

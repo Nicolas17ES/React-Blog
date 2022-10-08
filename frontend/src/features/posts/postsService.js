@@ -56,6 +56,76 @@ const getUserPosts = async (token) => {
 }
 
 
+// get all  posts from other users
+
+const getPostsFromOtherUser = async (userId) => {
+
+    const response = await axios.get(API_URL + '/user/' + userId);
+
+    return response.data;
+}
+
+
+// get all posts form search bar
+
+const getPostsFromQuery = async (searchQuery) => {
+  
+    const response = await axios.get(API_URL + '/search/' + searchQuery);
+
+    return response.data;
+}
+// getbest rated posts
+
+const getBestRatedPosts = async () => {
+  
+    const response = await axios.get(API_URL + '/best/rated');
+
+    return response.data;
+}
+
+// get latest posts
+const getLatestPosts = async () => {
+  
+    const response = await axios.get(API_URL + '/latest/posts');
+
+    return response.data;
+}
+
+
+// get saved posts
+
+const getSavedPosts = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.get(API_URL + '/interested/posts', config);
+
+    return response.data;
+}
+
+// save post
+const savePost = async (postId, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.post(API_URL + '/interested/posts', postId, config);
+
+    return response.data;
+}
+
+// save post
+const getUserBestPosts = async (userId) => {
+
+    const response = await axios.get(API_URL + '/best/rated/' + userId);
+
+    return response.data;
+}
+
+
 
 // delete post
 
@@ -74,6 +144,13 @@ const ticketService = {
     getUserPosts,
     getUserSinglePost,
     updatePost,
+    getPostsFromQuery,
+    getBestRatedPosts,
+    getLatestPosts,
+    getSavedPosts,
+    savePost,
+    getPostsFromOtherUser,
+    getUserBestPosts,
 }
 
 export default ticketService

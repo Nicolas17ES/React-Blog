@@ -1,30 +1,20 @@
 import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {getUserPosts, reset} from '../features/posts/postsSlice'
+import {getSavedPosts, reset} from '../features/posts/postsSlice'
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
 import PostItem from '../components/PostItem'
 
-function UserPosts() {
-
-    const {posts, isLoading, isSuccess} = useSelector((state) => state.posts)
+function SavedPosts() {
+    const {savedPosts, isLoading, isSuccess} = useSelector((state) => state.posts);
     const dispatch = useDispatch();
 
-    // get all user tickets
+
     useEffect(() => {
-        dispatch(getUserPosts())
+
+        dispatch(getSavedPosts())
+        // eslint-disable-next-line
     }, [dispatch])
-
-    // if we want smth to happen on umount you need to return a function on useffect
-    useEffect(() => {
-        return () => {
-            if(isSuccess){
-                dispatch(reset())
-            }
-        }
-    }, [dispatch, isSuccess])
-    
-
 
 
     if(isLoading){
@@ -35,7 +25,8 @@ function UserPosts() {
 
     return (
         <div>
-            <BackButton></BackButton>
+            <h1>Your saved posts</h1>
+            <BackButton url={'/'}></BackButton>
             <h1>All your Blog Posts</h1>
             <div className="tickets">
                 <div className="ticket-headings">
@@ -45,7 +36,7 @@ function UserPosts() {
                     <div>Type</div>
                     <div>Body</div>
                 </div>
-                {posts.map((post) => (
+                {savedPosts.map((post) => (
                     <PostItem key={post._id} post={post}/>
                 ))}
             </div>
@@ -53,4 +44,4 @@ function UserPosts() {
     )
 }
 
-export default UserPosts
+export default SavedPosts
