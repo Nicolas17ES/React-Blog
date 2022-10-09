@@ -3,6 +3,8 @@ const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const Rating = require('../models/ratingModel');
 const Post = require('../models/postModel');
+const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 
 
 // @desc Get  post rating
@@ -29,6 +31,7 @@ const getRating = asyncHandler(async(req, res) => {
 // @access Private
 
 const createRating  = asyncHandler(async(req, res) => {
+    const userId = req.body.userId
 
     // get user using the id in the jwt
 
@@ -37,15 +40,37 @@ const createRating  = asyncHandler(async(req, res) => {
         res.status(401)
         throw new Error('User not found');
     }
+    if(userId === req.user.id){
+        res.status(401)
+        throw new Error('Cannot vote your own post');
+    }
+    const checkRating = await Rating.aggregate([
+        { "$match": { 
+            "user": ObjectId(req.user.id),
+            "post": ObjectId(req.params.postId),
+            }
+        },
+    ])
+    
+    // .find({user: req.user.id})
 
-    const rating = await Rating.create({
-        user: req.user.id,
-        post: req.params.postId,
-        agree: req.body.agree
-    })
-    console.log(rating)
-     
-    res.status(200).json(rating)
+    console.log(checkRating)
+    if(checkRating.length < 1){
+
+        const rating = await Rating.create({
+            user: req.user.id,
+            post: req.params.postId,
+            agree: req.body.agree
+        })
+
+        res.status(200).json(rating)
+
+    } else {
+        res.status(401)
+        throw new Error('User has already voted');
+    }
+
+    
 })
 
 

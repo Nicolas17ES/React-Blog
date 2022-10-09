@@ -27,7 +27,7 @@ const getInterested = asyncHandler(async(req, res) => {
 
     const posts = await Post.find({_id: {$in: interestedIds}})
      
-    res.status(200).json(posts)
+    res.status(200).json(posts.reverse())
 })
 
 

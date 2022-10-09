@@ -15,11 +15,10 @@ const initialState = {
 // functions
 
 // create comment
-export const createRating = createAsyncThunk('rating/create', async ({agree, postId}, thunkAPI) => {
+export const createRating = createAsyncThunk('rating/create', async ({ratingData, postId}, thunkAPI) => {
     try{
-        console.log(agree)
         const token = thunkAPI.getState().auth.user.token;
-        return await ratingService.createRating(agree, postId, token)
+        return await ratingService.createRating(ratingData, postId, token)
     } catch(error){
         const message = (error.response && error.response.data && error.response.data.message) || error.message || error.toString();
         return thunkAPI.rejectWithValue(message)
@@ -45,7 +44,12 @@ export const ratingSlice = createSlice ({
     name: 'rating',
     initialState,
     reducers: {
-        reset: (state) => initialState
+        reset: (state) => {
+            state.isError = false
+            state.isSuccess = false
+            state.isLoading = false
+            state.message = ''
+        }
     },
     extraReducers: (builder) => {
         builder

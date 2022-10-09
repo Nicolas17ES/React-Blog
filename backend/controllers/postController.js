@@ -26,7 +26,7 @@ const getPosts  = asyncHandler(async(req, res) => {
 
     const posts = await Post.find({user: req.user.id})
      
-    res.status(200).json(posts)
+    res.status(200).json(posts.reverse())
 })
 
 
@@ -45,7 +45,14 @@ const getPostsFromOtherUser  = asyncHandler(async(req, res) => {
         throw new Error('User not found');
     }
 
-    const posts = await Post.find({user: req.params.userId})
+    const posts = await Post.aggregate([
+        { "$match": { 
+            "user": ObjectId(req.params.userId),
+            "privatePost": false,
+            }
+        },
+    ])
+    
      
     res.status(200).json(posts.reverse())
 })
@@ -91,7 +98,7 @@ const getPost  = asyncHandler(async(req, res) => {
 // @access Private
 
 const createPost  = asyncHandler(async(req, res) => {
-        const {type, title, body} = req.body;
+        const {type, title, body, privatePost} = req.body;
 
 
     if(!type || !body || !title){
@@ -111,6 +118,7 @@ const createPost  = asyncHandler(async(req, res) => {
         type,
         body,
         title,
+        privatePost,
         username: req.user.username.toLowerCase(),
         user: req.user.id,
         status: 'new'
@@ -146,6 +154,8 @@ const deletePost  = asyncHandler(async(req, res) => {
         res.status(401)
         throw new Error('Not Authorized')
     }
+    
+    await Rating.deleteMany({post: req.params.id})
 
     await post.remove();
      
@@ -192,7 +202,13 @@ const updatePost  = asyncHandler(async(req, res) => {
 const getPostsSearchQuery  = asyncHandler(async(req, res) => {
     const searchQuery = req.params.query;
     const posts = await Post.find({$or:[{username: {$regex : searchQuery.toString(), "$options": "i" }}, {type: {$regex : searchQuery.toString(), "$options": "i" }}, {title: {$regex : searchQuery.toString(), "$options": "i" }}]})
-    res.status(200).json(posts)
+    const data = [];
+    for(let i = 0; i < posts.length; i++){
+        if(posts[i].privatePost === false){
+            data.push(posts[i]);
+        }
+    }
+    res.status(200).json(data)
 })
 
 
@@ -226,7 +242,6 @@ const getBestRatedPosts  = asyncHandler(async(req, res) => {
 // @route GET/api/posts/best/rated/userId
 const getBestRatedPostsFromUser  = asyncHandler(async(req, res) => {
     const id = req.params.userId;
-    console.log(id)
 
     const rating = await Rating.aggregate([
         {"$match" : {"agree" : true}},
@@ -279,7 +294,25 @@ const getBestRatedPostsFromUser  = asyncHandler(async(req, res) => {
 // @route GET/api/posts/best/rated
 const getLatestPosts  = asyncHandler(async(req, res) => {
 
-    const posts = await Post.find().limit(3).sort({_id:-1});
+    const posts = await Post.aggregate([
+        { "$match": { 
+            "privatePost": false
+            }
+        },
+
+        { "$sort" : 
+            { "_id": -1 } 
+        },
+
+        {
+            "$limit" : 3
+        },
+
+    ])
+    
+
+    console.log(posts)
+    
 
     res.status(200).json(posts)
 })
@@ -296,7 +329,6 @@ module.exports = {
     getBestRatedPosts,
     getLatestPosts,
     getPostsFromOtherUser,
-    getBestRatedPostsFromUser,
     getBestRatedPostsFromUser,
 }
   

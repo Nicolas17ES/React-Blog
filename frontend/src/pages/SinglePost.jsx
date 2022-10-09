@@ -1,8 +1,8 @@
 import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
-import {getUserSinglePost, updatePost, savePost} from '../features/posts/postsSlice'
+import {getUserSinglePost, updatePost, savePost, deleteUserPost} from '../features/posts/postsSlice'
 import {getComments, createComment} from '../features/comments/commentsSlice'
-import {Link, useParams} from 'react-router-dom'
+import {Link, useParams, useNavigate} from 'react-router-dom'
 import Spinner from '../components/Spinner'
 import ShareLinks from '../components/ShareLinks'
 import BackButton from '../components/BackButton'
@@ -12,7 +12,7 @@ import {toast} from 'react-toastify'
 import Modal from 'react-modal'
 import {BiEditAlt} from 'react-icons/bi'
 import {FaPlus} from 'react-icons/fa'
-import {BsFillSaveFill} from 'react-icons/bs'
+import {BsFillSaveFill, BsFillTrashFill} from 'react-icons/bs'
 
 
 // modal style
@@ -34,11 +34,15 @@ Modal.setAppElement('#root')
 function SinglePost() {
     const [openModal, setOpenModal] = useState(false);
     const [commentText, setCommentText] = useState('');
+    const [isUserPost, setIsUserPost] = useState(false);
 
     const { post, isLoading, isError, message} = useSelector((state) => state.posts);
     const { comments, isLoading: commentsIsLoading} = useSelector((state) => state.comments);
+    const {user} = useSelector(state => state.auth)
+    
 
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     const {postId} = useParams();
 
     // get all user tickets
@@ -48,15 +52,27 @@ function SinglePost() {
         }
         dispatch(getUserSinglePost(postId))
         dispatch(getComments(postId))
+        if(user._id === post.user){
+            setIsUserPost(true);
+        } else {
+            setIsUserPost(false)
+        }
         // eslint-disable-next-line
-    }, [isError, message, postId])
+    }, [isError, message, postId, user, post.user])
 
 
     
     // update single ticket form own user
 
-    const updateTicket = () => {
-        console.log('hey')
+    const changePrivacy = () => {
+        dispatch(updatePost(postId))
+    }
+
+    // delete post
+
+    const deletePost = () => {
+        dispatch(deleteUserPost(postId))
+        navigate('/user-posts')
     }
 
     // MODAL
@@ -116,34 +132,61 @@ function SinglePost() {
                 <hr/>
                 <div className="ticket-desc" style={{textTransform: 'capitalize'}}>Category: {post.type}</div>
                 <div className="">{post.body}</div>
-                <span> <p>Save</p><BsFillSaveFill onClick={saveThisPost}/></span>
-                <RatingResults />
-                <ShareLinks hash={post.type} title={post.title}/>
-                <h2>Comments</h2>
-                {comments.map((comment) => (
-                    <SingleComment key={comment._id} comment={comment}/>
-                ))}
+                
+                {post.privatePost ? (
+                    <>
+                        <span style={{color: "red"}}>This is a private Post</span>
+    
+                    </>
+                ) : (
+                    <>
+                        <span> <p>Save</p><BsFillSaveFill onClick={saveThisPost}/></span>
+                        <RatingResults userId={post.user}/> 
+                        <ShareLinks hash={post.type} title={post.title}/>
+                        <h2>Comments</h2>
+                        {comments.map((comment) => (
+                            <SingleComment key={comment._id} comment={comment}/>
+                        ))}
+                    </>
+                )}
+        
             </header>
 
-            {/* modal */}
-            <button onClick={showModal} className="btn"> <FaPlus/> Add Comment</button>
-            <Modal isOpen={openModal} onRequestClose={closeModal} style={customStyles} contentLabel='Add Comment'>
-                <h2>Add a comment</h2>
-                <button className="btn-close" onClick={closeModal}>Close</button>
-                <form onSubmit={onCommentSubmit}>
-                    <div className="form-group">
-                        <textarea name="commentText" id="commentText" className="form-control" placeholder="add comment" value={commentText} onChange={(e) => setCommentText(e.target.value)} ></textarea>
-                    </div>
-                    <div className="form-group">
-                        <button className="btn" type='submit'>
-                            Add comment
-                        </button>
-                    </div>
-                </form>
-            </Modal>
+            
+            {post.privatePost ? null : (
+                <>
+                {/* modal */}
+                <button onClick={showModal} className="btn"> <FaPlus/> Add Comment</button>
+                <Modal isOpen={openModal} onRequestClose={closeModal} style={customStyles} contentLabel='Add Comment'>
+                    <h2>Add a comment</h2>
+                    <button className="btn-close" onClick={closeModal}>Close</button>
+                    <form onSubmit={onCommentSubmit}>
+                        <div className="form-group">
+                            <textarea name="commentText" id="commentText" className="form-control" placeholder="add comment" value={commentText} onChange={(e) => setCommentText(e.target.value)} ></textarea>
+                        </div>
+                        <div className="form-group">
+                            <button className="btn" type='submit'>
+                                Add comment
+                            </button>
+                        </div>
+                    </form>
+                </Modal>
             {/* modal */}
 
-            <button className="btn btn-block" onClick={updateTicket}> <BiEditAlt/></button>
+                </>
+            )}
+            
+
+            {isUserPost && post.privatePost ? (
+                <>
+                <button className="btn btn-block" onClick={changePrivacy}>Make Post Public <BiEditAlt/></button> 
+                </>
+            ) : null}
+            {isUserPost ? (
+                <>
+                <button className="btn btn-block" onClick={deletePost}>Delete Post <BsFillTrashFill/></button> 
+                </>
+            ) : null}
            
         </div>
     )

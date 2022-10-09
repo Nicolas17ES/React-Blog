@@ -17,19 +17,26 @@ function SearchQuery() {
     return (
         <div>
             <BackButton url={'/'}></BackButton>
-            <h1>All your Blog Posts</h1>
-            <div className="tickets">
-                <div className="ticket-headings">
-                    <div>Username</div>
-                    <div>Date</div>
-                    <div>Title</div>
-                    <div>Type</div>
-                    <div>Body</div>
+            {postsSearch.length === 0 ? (
+                <h1>No posts have been found, please try again</h1>
+            ): (
+                <>
+                    <h1>All your Blog Posts</h1>
+                <div className="tickets">
+                    <div className="ticket-headings">
+                        <div>Username</div>
+                        <div>Date</div>
+                        <div>Title</div>
+                        <div>Type</div>
+                        <div>Body</div>
+                    </div>
+                    {postsSearch.map((post) => (
+                        <PostItem key={post._id} post={post}/>
+                    ))}
                 </div>
-                {postsSearch.map((post) => (
-                    <PostItem key={post._id} post={post}/>
-                ))}
-            </div>
+                </>
+            )}
+
         </div>
     )
 }

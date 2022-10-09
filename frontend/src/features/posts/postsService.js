@@ -28,13 +28,25 @@ const getUserSinglePost = async (postId, token) => {
 }
 // update User  single post
 
-const updatePost = async (postId, postData, token) => {
+const updatePost = async (postId, token) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
-    const response = await axios.put(API_URL + '/' + postId, postData, config);
+    const response = await axios.put(API_URL + '/' + postId, {privatePost: false}, config);
+
+    return response.data;
+}
+// update User  single post
+
+const deleteUserPost = async (postId, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`
+        }
+    }
+    const response = await axios.delete(API_URL + '/' + postId, config);
 
     return response.data;
 }
@@ -151,6 +163,7 @@ const ticketService = {
     savePost,
     getPostsFromOtherUser,
     getUserBestPosts,
+    deleteUserPost,
 }
 
 export default ticketService

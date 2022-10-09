@@ -17,6 +17,8 @@ function NewPost() {
     const [type, setType] = useState('');
     const [title, setTitle] = useState('');
     const [body, setBody] = useState('');
+    const [privatePost, setPrivatePost] = useState(false);
+    
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -34,11 +36,14 @@ function NewPost() {
 
     }, [dispatch, isError, isSuccess, navigate, message])
 
+    const handleChange = () => {  
+        setPrivatePost(!privatePost);
+    }; 
+  
 
     const onSubmit = (e) => {
         e.preventDefault();
-        console.log(type, title, body)
-        dispatch(createPost({type, title, body}))
+        dispatch(createPost({type, title, body, privatePost}))
     }
 
     if(isLoading){
@@ -80,6 +85,11 @@ function NewPost() {
                         <label htmlFor="body">Post Body</label>
                         <textarea name="body" id="body" className="form-control" placeholder="Body text" value={body} onChange={(e) => setBody(e.target.value)}></textarea>
                     </div>
+                    <div className="form-group">
+                        <label class="switch">Private Post</label>
+                        <input type="checkbox" onChange={handleChange}/>
+                    </div>
+                    
                     <div className="form-group">
                         <button className="btn btn-block">
                             Submit

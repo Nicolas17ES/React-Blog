@@ -14,6 +14,7 @@ function ViewUserProfile() {
 
     const { posts, isLoading, isError, message} = useSelector((state) => state.posts);
     const [showsPosts, setShowPosts] = useState(false);
+    // const [postsOrder, setPostsOrder] = useState();
 
 
     const location = useLocation();
@@ -26,6 +27,9 @@ function ViewUserProfile() {
         dispatch(getPostsFromOtherUser(data.userId))
         // eslint-disable-next-line
     }, [data.userId])
+    
+
+
 
     
     // show user posts
@@ -38,7 +42,6 @@ function ViewUserProfile() {
     // select options
     const options = [
         {value: 'latest', text: 'Latest'},
-        {value: 'oldest', text: 'Oldest'},
         {value: 'bestrated', text: 'Best Rated'},
     ];
     const [selected, setSelected] = useState(options[0].value);
@@ -50,9 +53,7 @@ function ViewUserProfile() {
     //change posts based select 
 
     useEffect(() => {
-        if(selected === 'oldest'){
-            console.log('oldest')
-        } else if (selected === 'bestrated'){
+        if (selected === 'bestrated'){
             // setShowPosts(false)
             dispatch(getUserBestPosts(data.userId))
             // setShowPosts(true)
@@ -87,8 +88,7 @@ function ViewUserProfile() {
                     </select>
             ) : null}
             {showsPosts ? (
-                posts.map((post) => (
-                    
+                posts.map((post) => ( 
                     <PostItem key={post._id} post={post}/>
                     
                 ))

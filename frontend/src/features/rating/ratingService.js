@@ -5,14 +5,15 @@ const API_URL = '/api/posts/';
 
 // create a comment
 
-const createRating = async (agree, postId, token) => {
+const createRating = async (ratingData, postId, token) => {
     const config = {
         headers: {
             Authorization: `Bearer ${token}`
         }
     }
     const response = await axios.post(API_URL + postId + '/rating', {
-        agree: agree,
+        userId: ratingData.userId,
+        agree: ratingData.agree,
     }, config);
 
     return response.data;

@@ -28,6 +28,10 @@ const postSchema = mongoose.Schema({
         required: true,
         enum: ['new', 'open', 'closed'],
         default: 'new'
+    },
+    privatePost: {
+        type: Boolean,
+        default: false
     }
 }, 
 {
