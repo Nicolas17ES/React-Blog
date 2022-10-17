@@ -29,7 +29,7 @@ function Login() {
         }
         // redirect when logged in
         if(isSuccess && user){
-            navigate('/')
+            navigate(-1)
         }
 
         dispatch(reset)

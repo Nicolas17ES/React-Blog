@@ -1,0 +1,140 @@
+@import url('https://fonts.googleapis.com/css2?family=Azeret+Mono&display=swap');
+
+.wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin: 0 auto;
+    font-family: 'Azeret Mono';
+    margin-top: 8em;
+ 
+}
+
+.section-home {
+    background: white;
+    height: 310px;
+    padding: 1em;
+    display: grid;
+    grid-template-areas: 
+    "title title block1 block2 block3"
+    "content content block1 block2 block3"
+    ;
+    gap: 2em;
+    grid-template-columns: .5fr repeat(4, 1fr) ;
+    grid-template-rows: 1fr 1fr;
+    position: relative;
+}
+
+.title{
+    grid-area: title;
+    color: black;
+    font-family: 'Azeret Mono', monospace;
+    font-weight: 400;
+    font-size: 38px;
+    line-height: 49.01px;
+    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    text-align: left;
+}
+.block1{
+    grid-area: block1;
+    background-color: #749BFF;
+    padding: .7em;
+    display: flex;
+    flex-direction: column;
+    max-width: 220px;
+    
+}
+/* .wrapper:before{
+    position: absolute;
+    content: 'CULTURE ART';
+    width: 100%;
+    font-weight: 800;
+    z-index: -1;
+    font-size: 5rem;
+    top: 0px;
+    left: 0px;
+    writing-mode: vertical-lr;
+    text-orientation: upright;
+    font-weight: 800;
+    letter-spacing: 0px;
+}
+.section-home:after{
+    position: absolute;
+    content: 'SOCIETY POLITICS';
+    font-weight: 800;
+    z-index: -1;
+    font-size: 8rem;
+    bottom: 0px;
+    left: 0px;
+} */
+.block2{
+    grid-area: block2;
+    background-color: #FF8D74;
+    padding: .7em;
+    max-width: 220px;
+}
+.block3{
+    grid-area: block3;
+    background-color: #252525;
+    color: #233a29;
+    padding: .7em;
+    max-width: 220px;
+}
+.block-top{
+    height: 20%;
+}
+.block-bottom{
+    height: 80%;
+    max-width: 100%;
+    /* border: 1px solid white; */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    font-size: 10px;
+    padding: 15px;
+}
+
+.bottom-text1{
+    width: 100%;
+    text-align: right;
+    margin-top: 10px;
+}
+.bottom-text2{
+    width: 100%;
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+.block-text1{
+    text-align: left;
+    color: white;
+    text-transform: uppercase;
+    font-size: 20px;
+    font-weight: 100;
+    line-height: 30px;
+}
+.block-text2{
+    text-align: left;
+    color: white;
+    text-transform: uppercase;
+    font-size: 37px;
+    font-weight: 400;
+    letter-spacing: 2.7px;
+    line-height: 25px;
+}
+.content{
+    display: flex;
+    justify-content: space-around;
+    align-items: flex-start;
+    flex-direction: column;
+    grid-area: content;
+    font-family: 'Azeret Mono';
+    font-style: normal;
+    font-weight: 100;
+    font-size: 13px;
+    letter-spacing: 3px;
+    text-align: left;
+}

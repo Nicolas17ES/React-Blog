@@ -93,10 +93,23 @@ const getMe  = asyncHandler(async(req, res) => {
 
     res.status(200).json(user)
 })
+// @desc set instructions
+// @route /api/users/me
+// @access Private
+
+const setInstructions  = asyncHandler(async(req, res) => {
+    const finalValue = req.params.instructionsValue;
+    const data = {
+        value: finalValue
+    }
+    console.log(data)
+    res.status(200).json(data)
+})
 
 
 module.exports = {
     registerUser,
     loginUser,
-    getMe
+    getMe,
+    setInstructions
 }

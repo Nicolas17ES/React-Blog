@@ -3,9 +3,22 @@ import {useSelector, useDispatch} from 'react-redux'
 import Spinner from '../components/Spinner'
 import BackButton from '../components/BackButton'
 import PostItem from '../components/PostItem'
+import {useLocation} from 'react-router-dom';
+
 
 function SearchQuery() {
     const {postsSearch, isLoading, isSuccess, isError} = useSelector((state) => state.posts)
+    const location = useLocation();
+    const [categ, setCateg] = useState()
+
+  
+    useEffect(() => {
+        if(location.state.category !== null){
+            setCateg(location.state.category)
+        } else {
+            setCateg(null)
+        }
+    }, [])
 
     if(isLoading){
         return(
@@ -21,15 +34,10 @@ function SearchQuery() {
                 <h1>No posts have been found, please try again</h1>
             ): (
                 <>
-                    <h1>All your Blog Posts</h1>
+                {categ ? <h1>All debates under the category: {categ}</h1> : null}
+                    
                 <div className="tickets">
-                    <div className="ticket-headings">
-                        <div>Username</div>
-                        <div>Date</div>
-                        <div>Title</div>
-                        <div>Type</div>
-                        <div>Body</div>
-                    </div>
+                   
                     {postsSearch.map((post) => (
                         <PostItem key={post._id} post={post}/>
                     ))}

@@ -38,13 +38,6 @@ function UserPosts() {
             <BackButton></BackButton>
             <h1>All your Blog Posts</h1>
             <div className="tickets">
-                <div className="ticket-headings">
-                    <div>Username</div>
-                    <div>Date</div>
-                    <div>Title</div>
-                    <div>Type</div>
-                    <div>Body</div>
-                </div>
                 {posts.map((post) => (
                     <PostItem key={post._id} post={post}/>
                 ))}
