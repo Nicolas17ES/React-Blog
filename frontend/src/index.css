@@ -4,13 +4,14 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  
 }
 
 body {
   font-family: 'Azeret Mono', monospace;
   height: 100vh;
-  background-color: white;
-  border-left: 1px solid black;
+  background-color: #f1f1f0;
+  overflow-x: hidden;
 }
 
 
@@ -18,33 +19,63 @@ ul {
   list-style: none;
 }
 
-/* 
 
-p {
-  line-height: 1.7;
-}
-
-ul {
-  list-style: none;
-}
-
-li {
-  line-height: 2.2;
-}
-
-h1,
-h2,
-h3 {
-  font-weight: 600;
-  margin-bottom: 10px;
-} */
 
 .container {
   width: 100%;
   margin: 0 auto;
   padding: 0 40px;
+  padding-bottom: 40px;
   
 }
+
+.button-block{
+  position:fixed;
+    bottom: 39px;
+    right: 38px;
+    z-index: 100;
+    cursor: pointer;
+}
+
+.back-button{
+  border: none;
+  position: relative;
+  width: 70px;
+    height: 70px;
+    background-color: #252525;
+    border-radius: 50%;
+    color: white;
+    cursor: pointer;
+
+
+}
+.back-button::after{
+     content: "";
+    position: absolute;
+    bottom: 6px;
+    right: 23%;
+    width: 1.5px;
+    height:  100px;
+    background-color: #252525;
+    filter: invert(1);
+    mix-blend-mode: difference;
+}
+.back-button::before{
+  font-size: 1em;
+    content: "return to last";
+    position: absolute;
+    color: #252525;
+    bottom: 34px;
+    right: 0;
+    height: 1.5px;
+    width:  150px;
+    background-color: #252525;
+   filter: invert(1);
+    mix-blend-mode: difference;
+
+}
+
+
 
 /* .header {
   display: flex;

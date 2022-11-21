@@ -1,5 +1,4 @@
-import {FaSignInAlt, FaSignOutAlt, FaUser} from 'react-icons/fa'
-import {useState} from 'react'
+import {useState, useEffect, useRef} from 'react'
 import {Link, useNavigate} from 'react-router-dom'
 import {useSelector, useDispatch} from 'react-redux'
 import {getPostsFromQuery} from '../features/posts/postsSlice'
@@ -10,6 +9,46 @@ import './Header.css'
 function Header() {
 
     const [searchQuery, setSearchQuery] = useState('');
+    const [siteLocation, setSiteLocation] = useState('');
+    const [category, setCategory] = useState('');
+    const {post, isLoading, isError, message} = useSelector((state) => state.posts);
+    const scrollLimit = useRef();
+    const politics = useRef();
+    const [y, setY] = useState(window.scrollY);
+
+    
+    useEffect(() => {
+        setSiteLocation(window.location.href)
+        setCategory(post.type)
+    }, [window.location.href, post])
+
+    useEffect(() => { 
+            setY(window.scrollY);
+            window.addEventListener("scroll", handleNavigation);
+
+            return () => {
+                window.removeEventListener("scroll", handleNavigation);
+            };
+    }, [y])
+
+    const handleNavigation = () => {
+        // const bottomElem = scrollLimit.current.offsetTop + scrollLimit.current.offsetHeight - 30;
+        //  if (y > bottomElem) {
+        //     scrollLimit.current.className = 'move-title';
+        //     // politics.current.className = 'move-category';
+        // } else if (y < bottomElem) {
+        //     scrollLimit.current.className = 'main-title2';
+        // }
+        // setY(window.scrollY);
+    }
+
+    const titleReturn = () => {
+        scrollLimit.current.className = 'main-title2';
+    }
+
+
+
+    
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -18,6 +57,7 @@ function Header() {
     const {user} = useSelector(state => state.auth)
 
     const onLogout = () => {
+        titleReturn()
         dispatch(logout());
         dispatch(reset());
         navigate('/')
@@ -34,9 +74,9 @@ function Header() {
         setSearchQuery('');
         navigate('/search',{state:{category: category}})  
     }
-    // const navigateTo = (query) => {
-    //     navigate('/',{state:{query: query}})  
-    // }
+    const navigateTo = () => {
+        navigate(-1)  
+    }
 
 
 
@@ -46,17 +86,24 @@ function Header() {
         <header className="header">
             <nav className="navbar">
                 <ul className="nav-grid">
-                    <li  className="searchbar">
-                        <form onSubmit={onSubmit}>
-                            {/* onChange={(e) => setSearchQuery(e.target.value.toLowerCase())} */}
-                            <button className="btn-search"><ImSearch size={23}/></button>
-                            <input  className="input-nav" type="text" placeholder="Type to Search..." onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}  value={searchQuery}/>
-                            
-                        </form>
+                    <div className="background"></div>
+                    <div className="searchbar-block">
+                        <li className="searchbar">
+                            <form onSubmit={onSubmit}>
+                                {/* onChange={(e) => setSearchQuery(e.target.value.toLowerCase())} */}
+                                <button className="btn-search"><ImSearch size={23}/></button>
+                                <input  className="input-nav" type="text" placeholder="Type to Search..." onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}  value={searchQuery}/>
+                                
+                            </form>
+                        </li>
+                     </div>
+                    <li  className="searchbar-text">
+                        <p>Version 001 -{'>'} 2022 // By Nicolás Luque // All rights reserved</p>
                     </li>
+                
                 {user ? (
                     <>
-                    <li className="profile-login">
+                    <li className="profile-login" onClick={titleReturn}>
                         {/* <Link className="link" to='/profile'><FaUser className="icon-nav"/>Profile</Link> */}
                         <Link className="link prof" to='/profile'><sup>{user.username}</sup></Link>
                     </li>
@@ -67,42 +114,42 @@ function Header() {
                     </>
                 ) : (
                     <>
-                    <li className="profile-login">
-                        {/* <Link className="link" to='/login'><FaSignInAlt className="icon-nav"/>Login</Link> */}
+                    <li className="profile-login" onClick={titleReturn}>
                         <Link className="link log" to='/login'><sup>Login</sup></Link>
                     </li>
-                    <li className="logout-register">
-                        {/* <Link className="link" to='/register'><FaUser className="icon-nav"/>Register</Link> */}
+                    <li className="logout-register" onClick={titleReturn}>
                         <Link className="link reg" to='/register'><sup>Register</sup></Link>
                     </li>
                     </>
                     )}
                     <li className="politics">
-                        <h2 className="h2-nav" onClick={() => categorySearch('politics')}>Politics</h2>
+                        <h2 ref={politics} className={`h2-nav ${category === 'Politics' ? "category-color" : ""}`} onClick={() => categorySearch('politics')}>Politics</h2>
                     </li>
                     <li className="society">
-                        <h2 className="h2-nav" onClick={() => categorySearch('society')}>Society</h2>
+                        <h2 className={`h2-nav ${category === 'Society' ? "category-color" : ""}`} onClick={() => categorySearch('society')}>Society</h2>
                     </li>
                     <li className="main-title">
                         <Link className="link" to='/'>
-                            <h1>DAILY FORUM DEBATES</h1>
+                            <h1 className="title-header" ref={scrollLimit}>DAILY FORUM DEBATES</h1>
                         </Link>
                     </li>
                     <li className="art">
-                        <h2 className="h2-nav" onClick={() => categorySearch('art')}>Art</h2>
+                        <h2 className={`h2-nav ${category === 'Art' ? "category-color" : ""}`} onClick={() => categorySearch('art')}>Art</h2>
                     </li>
                     <li className="culture">
-                        <h2 className="h2-nav" onClick={() => categorySearch('culture')}>Culture</h2>
+                        <h2 className={`h2-nav ${category === 'Culture' ? "category-color" : ""}`} onClick={() => categorySearch('culture')}>Culture</h2>
                     </li>
-                    <li className="bottom-nav">
-                        <Link to="/" state={'bestrated'} className="best-rated">Best Rated Debates</Link>
-                        <Link to="/" state={'authors'} className="authors">Look for Authors</Link>
-                        <Link to="/" state={'latest'} className="latest">Find our Latest Debates</Link>
-                    </li>
-                    <li className="emptyOne">
-                    </li>
-                    <li className="emptyTwo">
-                    </li>
+
+                    {/* {siteLocation === 'http://localhost:3000/' ? (
+                        <li className="scroll">
+                            <span className="keepScrolling"></span>
+                        </li>
+                    ): (
+                        <li className="scroll" onClick={navigateTo}>
+                            <span className="backHome"></span>
+                        </li>
+                    )} */}
+                
                 </ul>
             </nav>
         </header>

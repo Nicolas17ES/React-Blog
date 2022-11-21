@@ -4,6 +4,8 @@ import {useState, useEffect} from 'react'
 import {useSelector, useDispatch} from 'react-redux'
 import {toast} from 'react-toastify'
 import Spinner from './Spinner'
+import '../pages/SinglePost.css'
+import {AiOutlinePlus, AiOutlineMinus} from 'react-icons/ai'
 
 
 
@@ -81,7 +83,8 @@ function RatingResults({userId}) {
         const percentageResult = (agreeHtml.length / totalVotes) * 100;
 
         const rounded = (Math.round(percentageResult * 10) / 10).toFixed(1);
-        setPercentage(rounded)
+        const rounded2 = Math.ceil(rounded) 
+        setPercentage(rounded2)
 
         // eslint-disable-next-line
     }, [agreeHtml, disAgreeHtml])
@@ -111,16 +114,34 @@ function RatingResults({userId}) {
         )
     }
     return (
-        <div>
-           {!hideVote && !hideVote2 ? (
-               <>
-                <span> <button onClick={() => createFeedback(true)}>Agree</button> {agreeHtml.length} </span>
-                <span> <button onClick={() => createFeedback(false)} >Disagree</button> {disAgreeHtml.length} </span>
-               </>
-           ): null }
-           {rating.length === 0 ? null : <span>{'Total likes: ' + percentage + '%'}</span>}
+        <div className="post-likes">
+           {/* {!hideVote && !hideVote2 ? (
+               <> */}
+               <h4 className="likes-title">Do you agree <span className="likes-title-black">with this post?</span></h4>
+                <div className="buttons-likes">
+                    <button className="post-like-button" onClick={() => createFeedback(true)}>YES</button>
+                    <button className="post-dislike-button" onClick={() => createFeedback(false)}>NO</button> 
+                </div>
+                {/* <div className="buttons-likes">
+                    <button className="post-like-button" onClick={() => createFeedback(true)}><AiOutlinePlus className="minus-plus"/> <AiOutlinePlus className="minus-plus"/></button>
+                    <button className="post-dislike-button" onClick={() => createFeedback(false)} ><AiOutlineMinus className="minus-plus"/><AiOutlineMinus className="minus-plus"/></button> 
+                </div> */}
+               {/* </>
+           ): null } */}
+           <div className="likes-bottom-block">{rating.length === 0 ? null : <span className="post-total-ikes">{percentage + '%'}</span>} <span className="total-likes-text">{'( of our debaters do )'}</span></div>
+           
             
         </div>
+        // <div>
+        //    {!hideVote && !hideVote2 ? (
+        //        <>
+        //         <span> <button onClick={() => createFeedback(true)}>Agree</button> {agreeHtml.length} </span>
+        //         <span> <button onClick={() => createFeedback(false)} >Disagree</button> {disAgreeHtml.length} </span>
+        //        </>
+        //    ): null }
+        //    {rating.length === 0 ? null : <span>{'Total likes: ' + percentage + '%'}</span>}
+            
+        // </div>
     )
 }
 

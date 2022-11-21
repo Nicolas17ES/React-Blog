@@ -5,9 +5,10 @@ function BackButton() {
     
     const navigate = useNavigate();
     return (
-        <button className="btn btn-reverse btn-back" onClick={() => navigate(-1)}>
-            <FaArrowCircleLeft/> Go Back
-        </button>
+        <div className="button-block">
+            <button className="back-button" onClick={() => navigate(-1)}>
+            </button>
+        </div>
     )
 }
 

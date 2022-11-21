@@ -14,6 +14,7 @@ import SearchQuery from './pages/SearchQuery'
 import UserProfile from './pages/UserProfile'
 import ViewUserProfile from './pages/ViewUserProfile'
 import Users from './pages/Users'
+import BackButton from './components/BackButton'
 
 
 function App() {
@@ -22,6 +23,7 @@ function App() {
       <Router>
         <div className="container">
           <Header/>
+          <BackButton/>
           <Routes>
             <Route path='/' element={<Home/>}/>
             <Route path='/login' element={<Login/>}/>
@@ -48,7 +50,6 @@ function App() {
             <Route path='/users' element={<PrivateRoutes/>}>
                <Route path='/users' element={<Users/>}/>
             </Route>
-           
           </Routes>
         </div>
       </Router>
